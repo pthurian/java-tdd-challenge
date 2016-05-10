@@ -36,30 +36,37 @@ public class DefaultPhone implements ConnectedPhone {
 
     @Override
     public void pushGreen() {
+        status = PhoneStatus.CALLING;
     }
 
     @Override
     public void pushRed() {
+        status = PhoneStatus.IDLE;
     }
 
     @Override
     public void send(String message) {
+        call.send(message);
     }
 
     @Override
     public void receive(CallIncoming request) {
         incoming = request;
         call = incoming.accept(this::onMessageReceive, this::onCallEnd);
+        status = PhoneStatus.RINGING;
     }
 
     @Override
     public void canceled(CallIncoming request) {
+        status = PhoneStatus.IDLE;
     }
     
     protected void onCallReject(RejectReason reason) {
+        status = PhoneStatus.IDLE;
     }
     
     protected void onCallAccept(Call call) {
+        status = PhoneStatus.IN_CALL;
     }
     
     protected void onMessageReceive(String message) {
@@ -67,6 +74,7 @@ public class DefaultPhone implements ConnectedPhone {
     }
     
     protected void onCallEnd() {
+        status = PhoneStatus.IDLE;
     }
     
     @Override
