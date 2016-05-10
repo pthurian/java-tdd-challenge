@@ -36,12 +36,21 @@ public class DefaultPhone implements ConnectedPhone {
 
     @Override
     public void pushGreen() {
-        status = PhoneStatus.CALLING;
+        if (status == PhoneStatus.RINGING) {
+            call = incoming.accept(this::onMessageReceive, this::onCallEnd);
+            this.onCallAccept(call);
+        } else {
+            status = PhoneStatus.CALLING;
+        }
     }
 
     @Override
     public void pushRed() {
-        status = PhoneStatus.IDLE;
+        if (status == PhoneStatus.RINGING) {
+            incoming.reject(RejectReason.BUSY);
+        } else if (status == PhoneStatus.IN_CALL) {
+            call.end();
+        }
     }
 
     @Override
@@ -52,7 +61,7 @@ public class DefaultPhone implements ConnectedPhone {
     @Override
     public void receive(CallIncoming request) {
         incoming = request;
-        call = incoming.accept(this::onMessageReceive, this::onCallEnd);
+        //call = incoming.accept(this::onMessageReceive, this::onCallEnd);
         status = PhoneStatus.RINGING;
     }
 
@@ -66,6 +75,7 @@ public class DefaultPhone implements ConnectedPhone {
     }
     
     protected void onCallAccept(Call call) {
+        this.call = call;
         status = PhoneStatus.IN_CALL;
     }
     

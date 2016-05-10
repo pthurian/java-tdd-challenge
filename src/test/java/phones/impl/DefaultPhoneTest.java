@@ -52,6 +52,17 @@ public class DefaultPhoneTest {
     }
     
     @Test
+    public void after_accepting_call() {
+        alice.dial(BOB);
+        alice.pushGreen();
+        assumeThat(bob.getStatus(), is(RINGING));
+        assumeThat(alice.getStatus(), is(CALLING));
+        bob.pushGreen();
+        assertThat(alice.getStatus(), is(IN_CALL));
+        assertThat(bob.getStatus(), is(IN_CALL));
+    }
+    
+    @Test
     public void in_call_getLastMessage_returns_last_message() {
         given_call_between(alice, bob);
         alice.send("Hello");
