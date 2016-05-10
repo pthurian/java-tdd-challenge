@@ -52,6 +52,16 @@ public class DefaultPhoneTest {
     }
     
     @Test
+    public void with_call_denial() {
+        alice.dial(BOB);
+        alice.pushGreen();
+        assumeThat(bob.getStatus(), is(RINGING));
+        bob.pushRed();
+        assertThat(alice.getStatus(), is(IDLE));
+        assertThat(bob.getStatus(), is(IDLE));
+    }
+    
+    @Test
     public void after_accepting_call() {
         alice.dial(BOB);
         alice.pushGreen();

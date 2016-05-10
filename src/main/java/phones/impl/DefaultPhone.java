@@ -48,6 +48,7 @@ public class DefaultPhone implements ConnectedPhone {
     public void pushRed() {
         if (status == PhoneStatus.RINGING) {
             incoming.reject(RejectReason.BUSY);
+            this.onCallReject(RejectReason.BUSY);
         } else if (status == PhoneStatus.IN_CALL) {
             call.end();
         }
